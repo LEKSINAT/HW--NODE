@@ -6,6 +6,15 @@ class UserModel {
     return rows;
   }
 
+  static async getUserById(id) {
+    const [rows] = await db.execute(
+      'SELECT * FROM users WHERE id = ?',
+      [id]
+    );
+
+    return rows[0] || null;
+  }
+
   static async createUser(userData) {
     const { name } = userData;
     const [result] = await db.execute(
@@ -21,13 +30,19 @@ class UserModel {
 
   static async updateUser(id, userData) {
     const { name } = userData;
-    const params = [name, id];
     const [result] = await db.execute(
       'UPDATE users SET name = ? WHERE id = ?',
-      params
+      [name, id]
     );
 
-    return result;
+    if (result.affectedRows === 0) {
+      return null;
+    }
+
+    return {
+      id: Number(id),
+      name
+    };
   }
 
   static async deleteUser(id) {
@@ -36,7 +51,7 @@ class UserModel {
       [id]
     );
 
-    return result;
+    return result.affectedRows > 0;
   }
 }
 
