@@ -1,5 +1,6 @@
 import express from 'express';
 import userRoutes from './routes/userRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 import db from './config/db.js';
 
 const app = express();
@@ -9,11 +10,13 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
   res.status(200).json({
-    message: 'Node.js OOP CRUD API is running'
+    message: 'Node.js OOP CRUD API is running',
+    endpoints: ['/users', '/products']
   });
 });
 
 app.use('/users', userRoutes);
+app.use('/products', productRoutes);
 
 const startServer = async () => {
   try {

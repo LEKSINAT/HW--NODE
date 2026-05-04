@@ -1,10 +1,15 @@
 import BaseController from './BaseController.js';
-import UserModel from '../models/users.js';
+import User from '../models/User.js';
 
 class UserController extends BaseController {
+  constructor() {
+    super();
+    this.userModel = new User();
+  }
+
   getUsers = async (req, res) => {
     try {
-      const users = await UserModel.getAllUsers();
+      const users = await this.userModel.get();
       return this.success(res, 'All users retrieved successfully', users);
     } catch (error) {
       return this.error(res, error.message);
@@ -14,7 +19,7 @@ class UserController extends BaseController {
   getUserById = async (req, res) => {
     try {
       const { id } = req.params;
-      const user = await UserModel.getUserById(id);
+      const user = await this.userModel.find(id);
 
       if (!user) {
         return this.error(res, 'User not found', 404);
@@ -34,7 +39,7 @@ class UserController extends BaseController {
         return this.error(res, 'Name is required', 400);
       }
 
-      const createdUser = await UserModel.createUser({ name: name.trim() });
+      const createdUser = await this.userModel.create({ name: name.trim() });
       return this.success(res, 'User created successfully', createdUser, 201);
     } catch (error) {
       return this.error(res, error.message);
@@ -50,7 +55,7 @@ class UserController extends BaseController {
         return this.error(res, 'Name is required', 400);
       }
 
-      const updatedUser = await UserModel.updateUser(id, { name: name.trim() });
+      const updatedUser = await this.userModel.update(id, { name: name.trim() });
 
       if (!updatedUser) {
         return this.error(res, 'User not found', 404);
@@ -65,7 +70,7 @@ class UserController extends BaseController {
   deleteUser = async (req, res) => {
     try {
       const { id } = req.params;
-      const deleted = await UserModel.deleteUser(id);
+      const deleted = await this.userModel.delete(id);
 
       if (!deleted) {
         return this.error(res, 'User not found', 404);

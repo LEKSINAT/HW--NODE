@@ -1,21 +1,13 @@
 import db from '../config/db.js';
+import BaseModel from './BaseModel.js';
 
-class UserModel {
-  static async getAllUsers() {
+class User extends BaseModel {
+  async get() {
     const [rows] = await db.execute('SELECT * FROM users');
     return rows;
   }
 
-  static async getUserById(id) {
-    const [rows] = await db.execute(
-      'SELECT * FROM users WHERE id = ?',
-      [id]
-    );
-
-    return rows[0] || null;
-  }
-
-  static async createUser(userData) {
+  async create(userData) {
     const { name } = userData;
     const [result] = await db.execute(
       'INSERT INTO users (name) VALUES (?)',
@@ -28,7 +20,7 @@ class UserModel {
     };
   }
 
-  static async updateUser(id, userData) {
+  async update(id, userData) {
     const { name } = userData;
     const [result] = await db.execute(
       'UPDATE users SET name = ? WHERE id = ?',
@@ -45,7 +37,7 @@ class UserModel {
     };
   }
 
-  static async deleteUser(id) {
+  async delete(id) {
     const [result] = await db.execute(
       'DELETE FROM users WHERE id = ?',
       [id]
@@ -53,6 +45,15 @@ class UserModel {
 
     return result.affectedRows > 0;
   }
+
+  async find(id) {
+    const [rows] = await db.execute(
+      'SELECT * FROM users WHERE id = ?',
+      [id]
+    );
+
+    return rows[0] || null;
+  }
 }
 
-export default UserModel;
+export default User;
