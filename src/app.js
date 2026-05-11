@@ -1,6 +1,6 @@
 import express from 'express';
-import userRoutes from './routes/userRoutes.js';
-import productRoutes from './routes/productRoutes.js';
+import userRoutes from './routes/UserRoutes.js';
+import productRoutes from './routes/ProductRoutes.js';
 import db from './config/db.js';
 
 const app = express();
@@ -23,12 +23,14 @@ const startServer = async () => {
     const connection = await db.getConnection();
     connection.release();
 
-    app.listen(PORT, () => {
+    return app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error('Database connection failed:', error.message);
+    return null;
   }
 };
 
-startServer();
+export { app, startServer };
+export default app;
